@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Router: rsync each repo's Claude Code transcripts into per-repo folders in
+  shared storage, every 15 minutes. Install on every machine whose transcripts
+  you want pooled. Additive (never --delete); a machine with no mirror folder
+  no-ops cleanly.
+
+  rsync only copies changed files, so a session still being appended is simply
+  re-copied on the next tick. There is deliberately no "is this thread finished"
+  detection: getting that wrong means silently dropping the tail of a session,
+  and re-copying a growing file is cheap.
+
+  Scope which repos are routed via transcript_sync_excludes.txt (sitting next to
+  this file). Use it to keep client/employer repos out of personal storage.
+
+  Replace {{INSTALL_DIR}} with the absolute directory holding these scripts, or
+  use install.sh, which does the substitution for you.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>cc-transcript-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{INSTALL_DIR}}/run_transcript_sync.sh</string>
+    </array>
+
+    <key>StartInterval</key>
+    <integer>900</integer>
+
+    <key>StandardOutPath</key>
+    <string>{{INSTALL_DIR}}/cc-transcript-sync.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>{{INSTALL_DIR}}/cc-transcript-sync.log</string>
+
+    <!-- Run once at load, so verifying the install doesn't mean waiting 15 min
+         and then wondering whether it is broken or merely early. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>AbandonProcessGroup</key>
+    <false/>
+
+    <!-- launchd gives an agent a minimal PATH that does NOT include Homebrew.
+         The script re-exports PATH itself for exactly this reason. -->
+</dict>
+</plist>

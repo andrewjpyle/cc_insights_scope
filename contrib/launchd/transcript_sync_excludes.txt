@@ -1,0 +1,18 @@
+# One substring per line. Any Claude Code project folder whose ENCODED name
+# contains one of these substrings is NOT copied to shared storage.
+#
+# The encoded name is the project path with every non-alphanumeric run replaced
+# by a dash, e.g.:
+#
+#   ~/code/acme-client/api   ->   -Users-alice-code-acme-client-api
+#
+# so a line of `acme-client` here excludes every repo under that directory.
+#
+# USE THIS. If a repo belongs to an employer or a client, its transcripts almost
+# certainly must not be copied into your personal cloud storage. Excluded repos
+# are printed in the sync log on every run, so the exclusion is visible rather
+# than assumed.
+#
+# Examples:
+# acme-client
+# work-laptop-only-repo
