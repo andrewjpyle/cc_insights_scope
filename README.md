@@ -132,8 +132,8 @@ username:
                          -Users-bob-dev-my-project        (same repo, other machine)
 ```
 
-Matching the full encoded path finds one machine's history and silently misses the other. That is
-the worst failure here: a report that looks complete and is not. So the match is a substring.
+Matching the full encoded path finds one machine's history and silently misses the other. The report
+would look complete and not be, so the match is a substring.
 
 ### Run `/insights` interactively
 
@@ -164,6 +164,8 @@ once if it asks. On macOS the Keychain is global, so you usually are not asked.
 | Refuse a workspace that is, or contains, a source | The rebuild deleting the transcripts it was about to read |
 | Missing source is a warning | Failing on a machine where only some sources exist |
 | Dedupe by session file name | One session counted twice after pooling |
+
+<p align="center"><img src="docs/assets/guards.webp" alt="Six guards: empty fragment, no match, matched with no files, workspace is a source, missing source, duplicate session" width="100%"></p>
 
 ## FAQ
 

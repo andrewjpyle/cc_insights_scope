@@ -1,0 +1,22 @@
+{
+  "name": "demo_run",
+  "command": [
+    "python3",
+    "cc_insights_scope.py",
+    "acme_widgets",
+    "--default-source",
+    "examples/sources/laptop",
+    "--source",
+    "examples/sources/desktop",
+    "--no-mirror",
+    "--workspace",
+    ".scope-demo"
+  ],
+  "exit_code": 0,
+  "captured_at": "2026-10-24T05:29:36+00:00",
+  "commit": "5f0cfc22428f5de31b15e3afb44bf91baed6ee3a",
+  "line_count": 20,
+  "env_passed": [],
+  "note": "",
+  "output": "repo fragment : acme_widgets\nmatch token   : acme-widgets\nworkspace     : .scope-demo\nsources       : examples/sources/laptop, examples/sources/desktop\n\npooled transcripts:\n     3  examples/sources/laptop/projects/-opt-alice-code-acme-widgets\n     2  examples/sources/desktop/-srv-bob-dev-acme-widgets\n\n  total copied: 5   (skipped 1 duplicate session files)\n\n======================================================================\nNEXT - launch Claude Code against this scoped workspace, then /insights:\n\n  CLAUDE_CONFIG_DIR=\".scope-demo\" claude\n\n  \u2026then run:  /insights\n======================================================================\nRun /insights INTERACTIVELY (not `claude -p`): a fresh config dir is not\nauto-authenticated. If it says 'Not logged in', run /login ONCE in that dir.\n"
+}
