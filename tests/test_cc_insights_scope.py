@@ -1,6 +1,6 @@
 """Tests for cc_insights_scope.
 
-Stdlib `unittest` only — the whole point of this package is that it has no
+Stdlib `unittest` only - the whole point of this package is that it has no
 dependencies, and a test suite that needs pytest would quietly undo that.
 
     python3 -m unittest discover -s tests -v
@@ -131,7 +131,7 @@ class MainEndToEnd(unittest.TestCase):
     def test_pools_across_sources_and_dedupes_identical_session_ids(self):
         """The same session, synced from two places, must land once. Session
         filenames are globally-unique UUIDs, so a collision means the same
-        session — copying it twice would double-count it in the report."""
+        session - copying it twice would double-count it in the report."""
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             a = root / "mac_a" / "projects"

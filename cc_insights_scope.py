@@ -7,7 +7,7 @@ other machines / other Claude Code accounts).
 `projects/` folder, and it respects `CLAUDE_CONFIG_DIR`. It has no repo filter:
 you get one report for every session on the machine, mixing every project you
 have ever touched. By building a throwaway config dir that contains ONLY the
-transcripts for one repo — copied from however many source roots you point at —
+transcripts for one repo - copied from however many source roots you point at -
 you get a repo-scoped, cross-account insights report instead.
 
 On macOS auth lives in the Keychain (global), so launching with this workspace
@@ -26,7 +26,7 @@ Examples
 The repo argument is a FRAGMENT, not an exact path: it is normalized to a match
 token (e.g. "my_project" -> "my-project") and every project folder across all
 sources whose encoded name CONTAINS that token is pooled. That tolerates a
-different OS username on the other machine, which changes the folder prefix —
+different OS username on the other machine, which changes the folder prefix -
 matching on the full encoded path would silently find nothing.
 """
 from __future__ import annotations
@@ -48,9 +48,9 @@ def encode_token(fragment: str) -> str:
 def candidate_projects_dirs(root: Path) -> list[Path]:
     """A source root may be any of three shapes, and we accept all of them:
 
-    * a **config dir** (has a ``projects/`` child) — e.g. ``~/.claude``
+    * a **config dir** (has a ``projects/`` child) - e.g. ``~/.claude``
     * a **``projects/`` dir** itself
-    * a **bare folder of encoded project dirs** — e.g. a folder you rsynced
+    * a **bare folder of encoded project dirs** - e.g. a folder you rsynced
 
     Return every plausible ``projects``-style dir to scan, de-duplicated.
     """
@@ -70,7 +70,7 @@ def candidate_projects_dirs(root: Path) -> list[Path]:
 
 def find_matching_folders(sources: list[Path], token: str) -> list[Path]:
     """Every project folder, across every source, whose encoded name contains
-    ``token``. A missing source is a warning, not an error — you may be running
+    ``token``. A missing source is a warning, not an error - you may be running
     on a machine where only some of the sources exist."""
     matches: list[Path] = []
     for src in sources:
@@ -93,7 +93,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--source", action="append", default=[],
         help="Extra source root to pool from (repeatable). May be a config dir, a projects/ dir, "
-             "or a bare folder of encoded project dirs — e.g. a folder rsynced from another machine.",
+             "or a bare folder of encoded project dirs - e.g. a folder rsynced from another machine.",
     )
     ap.add_argument(
         "--default-source", default=str(Path.home() / ".claude"),
@@ -176,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     # Rebuild the workspace's projects dir from scratch. Without this, a previous
-    # repo's transcripts stay behind and silently join the next report — and a
+    # repo's transcripts stay behind and silently join the next report - and a
     # too-large report is indistinguishable from a correct one.
     if dest_projects.exists():
         shutil.rmtree(dest_projects)
@@ -209,7 +209,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"\n  total copied: {copied}   (skipped {skipped_dupe} duplicate session files)")
 
     print("\n" + "=" * 70)
-    print("NEXT — launch Claude Code against this scoped workspace, then /insights:")
+    print("NEXT - launch Claude Code against this scoped workspace, then /insights:")
     print(f'\n  CLAUDE_CONFIG_DIR="{workspace}" claude\n')
     print("  …then run:  /insights")
     print("=" * 70)

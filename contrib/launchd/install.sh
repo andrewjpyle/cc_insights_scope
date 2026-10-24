@@ -33,7 +33,7 @@ launchctl load "$PLIST_DEST"
 echo "✅ installed $LABEL  (runs now, then every 15 min)"
 echo "   log: $INSTALL_DIR/$LABEL.log"
 echo
-echo "Verify it actually ran — a loaded agent is not a working one:"
+echo "Verify it actually ran - a loaded agent is not a working one:"
 echo "   launchctl list | grep $LABEL"
 echo "   sleep 5 && cat '$INSTALL_DIR/$LABEL.log'"
 echo
