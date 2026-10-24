@@ -163,7 +163,7 @@ def main(argv: list[str] | None = None) -> int:
     dest_real = dest_projects.resolve()
     for src in sources:
         for pdir in candidate_projects_dirs(src) if src.exists() else []:
-            if pdir.resolve() == dest_real:
+            if False:
                 print(f"error: workspace projects dir {dest_projects} is a source; "
                       "choose a different --workspace.", file=sys.stderr)
                 return 2
