@@ -211,5 +211,72 @@ class MainEndToEnd(unittest.TestCase):
         self.assertIn("empty after normalization", err.getvalue())
 
 
+    def _run_err(self, argv):
+        err = io.StringIO()
+        stderr, sys.stderr = sys.stderr, err
+        try:
+            rc, _ = self._run(argv)
+        finally:
+            sys.stderr = stderr
+        return rc, err.getvalue()
+
+    def test_refuses_a_workspace_that_would_delete_a_source(self):
+        """--workspace pointing at a source config dir used to rmtree the
+        user's real transcripts and exit 0 with an empty workspace."""
+        with tempfile.TemporaryDirectory() as td:
+            cfg = Path(td) / "cfg"
+            _mkproject(cfg / "projects", "-opt-a-demo-app", ["s1"])
+            rc, err = self._run_err([
+                "demo_app", "--default-source", str(cfg), "--no-mirror",
+                "--workspace", str(cfg),
+            ])
+            self.assertEqual(rc, 2)
+            self.assertIn("is a source", err)
+            self.assertTrue((cfg / "projects" / "-opt-a-demo-app" / "s1.jsonl").exists())
+
+    def test_refuses_when_a_matched_folder_lives_inside_the_workspace(self):
+        with tempfile.TemporaryDirectory() as td:
+            ws = Path(td) / "ws"
+            nested = ws / "projects" / "stash"
+            _mkproject(nested, "-opt-a-demo-app", ["s1"])
+            rc, err = self._run_err([
+                "demo_app", "--default-source", "", "--no-mirror",
+                "--source", str(nested), "--workspace", str(ws),
+            ])
+            self.assertEqual(rc, 2)
+            self.assertIn("inside the workspace", err)
+            self.assertTrue((nested / "-opt-a-demo-app" / "s1.jsonl").exists())
+
+    def test_matched_folders_with_no_transcripts_exit_1(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "projects" / "-opt-b-demo-app").mkdir(parents=True)
+            rc, err = self._run_err([
+                "demo_app", "--default-source", str(root), "--no-mirror",
+                "--workspace", str(root / "ws"),
+            ])
+            self.assertEqual(rc, 1)
+            self.assertIn("held no *.jsonl", err)
+            self.assertFalse((root / "ws" / "projects").exists())
+
+
+    def test_committed_demo_sources_pool_five_sessions_and_skip_one_duplicate(self):
+        """The README demo: fictional sources in examples/ must keep producing
+        the documented result (5 copied, 1 duplicate skipped, no unrelated repo)."""
+        ex = Path(__file__).resolve().parent.parent / "examples" / "sources"
+        with tempfile.TemporaryDirectory() as td:
+            ws = Path(td) / "ws"
+            rc, out = self._run([
+                "acme_widgets", "--default-source", str(ex / "laptop"),
+                "--source", str(ex / "desktop"), "--no-mirror", "--workspace", str(ws),
+            ])
+            self.assertEqual(rc, 0)
+            self.assertIn("total copied: 5", out)
+            self.assertIn("skipped 1 duplicate", out)
+            names = [p.name for p in (ws / "projects" / "insights-scope-acme-widgets").glob("*.jsonl")]
+            self.assertEqual(len(names), 5)
+            self.assertNotIn("unrelated", out)
+
+
 if __name__ == "__main__":
     unittest.main()

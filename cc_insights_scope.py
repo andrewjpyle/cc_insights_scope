@@ -157,6 +157,24 @@ def main(argv: list[str] | None = None) -> int:
         print("       synced into a --source dir.", file=sys.stderr)
         return 1
 
+    # The rebuild below deletes dest_projects. Refuse if that would delete a
+    # source: the workspace is (or contains) a matched folder, or it is a
+    # source's own projects dir (e.g. --workspace ~/.claude).
+    dest_real = dest_projects.resolve()
+    for src in sources:
+        for pdir in candidate_projects_dirs(src) if src.exists() else []:
+            if pdir.resolve() == dest_real:
+                print(f"error: workspace projects dir {dest_projects} is a source; "
+                      "choose a different --workspace.", file=sys.stderr)
+                return 2
+    for folder in folders:
+        fr = folder.resolve()
+        if fr == dest_real or dest_real in fr.parents:
+            print(f"error: matched folder {folder} is inside the workspace "
+                  f"{dest_projects}, which is rebuilt on every run; move it or "
+                  "choose a different --workspace.", file=sys.stderr)
+            return 2
+
     # Rebuild the workspace's projects dir from scratch. Without this, a previous
     # repo's transcripts stay behind and silently join the next report — and a
     # too-large report is indistinguishable from a correct one.
@@ -177,6 +195,13 @@ def main(argv: list[str] | None = None) -> int:
             copied += 1
             n += 1
         per_folder[str(folder)] = n
+
+    if copied == 0 and skipped_dupe == 0:
+        print(f"error: {len(folders)} folder(s) matched '{token}' but held no *.jsonl "
+              "transcripts; an empty workspace would read as a report of no work.",
+              file=sys.stderr)
+        shutil.rmtree(dest_projects)
+        return 1
 
     print("pooled transcripts:")
     for f, n in per_folder.items():
