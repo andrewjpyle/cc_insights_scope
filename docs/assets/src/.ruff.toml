@@ -1,0 +1,3 @@
+# Vendored from AACC aacc-readme-kit; do not lint.
+[lint]
+ignore = ["ALL"]

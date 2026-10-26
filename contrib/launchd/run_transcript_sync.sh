@@ -18,7 +18,7 @@
 # Pure rsync. No secrets. A machine with no mirror folder no-ops cleanly.
 #
 # SCOPE / CONFIDENTIALITY: edit transcript_sync_excludes.txt (one substring per
-# line) to keep a repo's transcripts OUT of shared storage — e.g. a client or
+# line) to keep a repo's transcripts OUT of shared storage - e.g. a client or
 # employer repo you must not copy into personal cloud storage. Excluded repos
 # are named in the log, so an exclusion is never silent.
 set -uo pipefail
@@ -47,11 +47,11 @@ resolve_mirror() {
 echo "[$(ts)] cc-transcript-sync: starting (src=$SRC)"
 
 if [[ ! -d "$SRC" ]]; then
-    echo "[$(ts)] no $SRC on this host — nothing to sync"; exit 0
+    echo "[$(ts)] no $SRC on this host - nothing to sync"; exit 0
 fi
 
 MIRROR="$(resolve_mirror)" || {
-    echo "[$(ts)] no mirror folder found — skipping (set MIRROR_ROOT to override)"; exit 0
+    echo "[$(ts)] no mirror folder found - skipping (set MIRROR_ROOT to override)"; exit 0
 }
 DEST_BASE="$MIRROR/cc-transcripts"
 mkdir -p "$DEST_BASE"
@@ -93,5 +93,5 @@ for dir in "$SRC"/*/; do
     synced_files=$((synced_files + ${#jsonls[@]}))
 done
 
-echo "[$(ts)] cc-transcript-sync: done — $synced_repos repo(s), ~$synced_files transcript file(s), $skipped_repos excluded → $DEST_BASE"
+echo "[$(ts)] cc-transcript-sync: done - $synced_repos repo(s), ~$synced_files transcript file(s), $skipped_repos excluded → $DEST_BASE"
 exit 0
